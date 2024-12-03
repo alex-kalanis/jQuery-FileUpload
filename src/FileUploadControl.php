@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zet\FileUpload;
 
 use Nette\Localization\ITranslator;
+use Nette\Http\FileUpload;
 use Zet\FileUpload\Model\DefaultFile;
 
 /**
@@ -640,10 +641,8 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 
 	/**
 	 * Vrátí nacachované hodnoty z controlleru.
-	 *
-	 * @return mixed|NULL
 	 */
-	public function getValue()
+	public function getValue(): FileUpload|array|null
 	{
 		$files = $this->cache->load($this->getTokenizedCacheName($this->token));
 
