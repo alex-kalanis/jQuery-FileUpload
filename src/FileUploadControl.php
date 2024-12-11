@@ -212,7 +212,7 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 	 * @param int    $maxFiles    Maximální počet souborů.
 	 * @param string $maxFileSize Maximální velikosti souboru.
 	 */
-	public function __construct(string $name, int $maxFiles, string $maxFileSize = null)
+	public function __construct(string $name, int $maxFiles, ?string $maxFileSize = null)
 	{
 		parent::__construct($name);
 		$this->maxFiles = $maxFiles;

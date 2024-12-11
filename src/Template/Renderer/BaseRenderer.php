@@ -74,7 +74,7 @@ abstract class BaseRenderer implements IUploadRenderer
 	 */
 	public function __construct(
 					FileUploadControl $fileUploadControl,
-					ITranslator $translator = null
+					?ITranslator $translator = null
 	)
 	{
 		$this->fileUploadControl = $fileUploadControl;
