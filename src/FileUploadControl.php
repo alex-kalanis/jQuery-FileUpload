@@ -71,15 +71,15 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 	/** @var \Zet\FileUpload\Model\UploadController */
 	private $controller;
 
-	/** @var string */
-	private $uploadModel;
+	/** @var string|null */
+	private $uploadModel = null;
 
 	/**
 	 * Třída pro filtrování nahrávaných souborů.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	private $fileFilter;
+	private $fileFilter = null;
 
 	/**
 	 * Pole vlastních definovaných parametrů.
@@ -88,8 +88,8 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 	 */
 	private $params = [];
 
-	/** @var string */
-	private $renderer;
+	/** @var string|null */
+	private $renderer = null;
 
 	/** @var string */
 	private $token;
@@ -138,10 +138,10 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 
 	/**
 	 * @static
-	 * @param       $systemContainer
-	 * @param array $configuration
+	 * @param \Nette\DI\Container $systemContainer
+	 * @param object $configuration
 	 */
-	public static function register(\Nette\DI\Container $systemContainer, $configuration = [])
+	public static function register(\Nette\DI\Container $systemContainer, $configuration = new \stdClass())
 	{
 		$class = __CLASS__;
 		\Nette\Forms\Container::extensionMethod('addFileUpload', static function (
@@ -153,9 +153,15 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 			/** @var FileUploadControl $component */
 			$component = new $class($name, $maxFiles, $maxFileSize);
 			$component->setContainer($systemContainer);
-			$component->setUploadModel($configuration->uploadModel);
-			$component->setFileFilter($configuration->fileFilter);
-			$component->setRenderer($configuration->renderer);
+			if (isset($configuration->uploadModel)) {
+				$component->setUploadModel($configuration->uploadModel);
+			}
+			if (isset($configuration->fileFilter)) {
+				$component->setFileFilter($configuration->fileFilter);
+			}
+			if (isset($configuration->renderer)) {
+				$component->setRenderer($configuration->renderer);
+			}
 
 			if (($configuration->translator ?? null) === null) {
 				$translator = $systemContainer->getByType(ITranslator::class, false);
@@ -385,10 +391,10 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 * @internal
 	 */
-	public function getFileFilter(): string
+	public function getFileFilter(): ?string
 	{
 		return $this->fileFilter;
 	}
@@ -469,9 +475,9 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getRenderer(): string
+	public function getRenderer(): ?string
 	{
 		return $this->renderer;
 	}
@@ -670,7 +676,7 @@ class FileUploadControl extends \Nette\Forms\Controls\UploadControl
 		$units = ['k' => 1024, 'm' => 1048576, 'g' => 1073741824];
 		$unit = strtolower(substr($value, -1));
 		if (is_numeric($unit) || !isset($units[$unit])) {
-			return $value;
+			return intval($value);
 		}
 
 		return ((int) $value) * $units[$unit];

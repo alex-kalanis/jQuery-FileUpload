@@ -90,11 +90,17 @@ class UploadController extends \Nette\Application\UI\Control
 	{
 		if ($this->renderer === null) {
 			$rendererClass = $this->uploadControl->getRenderer();
-			$this->renderer = new $rendererClass($this->uploadControl, $this->uploadControl->getTranslator());
+			if ($rendererClass !== null) {
+				$this->renderer = new $rendererClass($this->uploadControl, $this->uploadControl->getTranslator());
 
-			if (!($this->renderer instanceof BaseRenderer)) {
+				if (!($this->renderer instanceof BaseRenderer)) {
+					throw new InvalidStateException(
+									'Renderer musí být instancí třídy `\\Zet\\FileUpload\\Template\\BaseRenderer`.'
+					);
+				}
+			} else {
 				throw new InvalidStateException(
-								'Renderer musí být instancí třídy `\\Zet\\FileUpload\\Template\\BaseRenderer`.'
+								'Musí být nastavena třída na renderování.'
 				);
 			}
 		}
